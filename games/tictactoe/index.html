@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism Tic-Tac-Toe</title>
+    <style>
+        :root {
+            --primary-color: rgba(103, 58, 183, 0.7);
+            --secondary-color: rgba(33, 150, 243, 0.4);
+            --background-color: #121212;
+            --glass-bg: rgba(25, 25, 35, 0.65);
+            --text-color: #e0e0e0;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --x-color: #ff5252;
+            --o-color: #2196f3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            background-image:
+                radial-gradient(circle at 20% 30%, var(--primary-color), transparent 40%),
+                radial-gradient(circle at 80% 40%, var(--secondary-color), transparent 40%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: var(--glass-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            padding: 25px;
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #a39bfe, #6ac5fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 24px;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+
+        .screen {
+            margin-bottom: 20px;
+        }
+
+        .mode-selection,
+        .difficulty-selection,
+        .board-size-selection,
+        .history-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            padding: 8px 12px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            font-size: 14px;
+            min-width: 90px;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        button.active {
+            background: var(--primary-color);
+            box-shadow: 0 0 10px rgba(103, 58, 183, 0.5);
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 8px;
+            margin: 20px auto;
+            max-width: 100%;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .cell:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .cell.x {
+            color: var(--x-color);
+        }
+
+        .cell.o {
+            color: var(--o-color);
+        }
+
+        .game-status {
+            margin: 15px 0;
+            font-size: 16px;
+            height: 20px;
+            font-weight: 300;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .restart-btn,
+        .back-btn,
+        .history-btn,
+        .clear-history-btn {
+            margin-top: 5px;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .restart-btn {
+            background: rgba(103, 58, 183, 0.4);
+        }
+
+        .restart-btn:hover {
+            background: rgba(103, 58, 183, 0.6);
+        }
+
+        .back-btn {
+            background: rgba(158, 158, 158, 0.4);
+        }
+
+        .back-btn:hover {
+            background: rgba(158, 158, 158, 0.6);
+        }
+
+        .history-btn {
+            background: rgba(33, 150, 243, 0.4);
+        }
+
+        .history-btn:hover {
+            background: rgba(33, 150, 243, 0.6);
+        }
+
+        .clear-history-btn {
+            background: rgba(244, 67, 54, 0.4);
+        }
+
+        .clear-history-btn:hover {
+            background: rgba(244, 67, 54, 0.6);
+        }
+
+        /* Responsive design */
+        @media (max-width: 450px) {
+            .container {
+                padding: 15px;
+                width: 95%;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            h2 {
+                font-size: 16px;
+            }
+
+            .cell {
+                font-size: 18px;
+            }
+
+            button {
+                padding: 6px 10px;
+                font-size: 13px;
+                min-width: 80px;
+            }
+        }
+
+        /* Fixed X and O display */
+        .cell.x::before,
+        .cell.x::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 3px;
+            background-color: var(--x-color);
+            border-radius: 3px;
+        }
+
+        .cell.x::before {
+            transform: rotate(45deg);
+        }
+
+        .cell.x::after {
+            transform: rotate(-45deg);
+        }
+
+        .cell.o::before {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            border: 3px solid var(--o-color);
+            border-radius: 50%;
+        }
+
+        /* Animation effects */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .screen {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Game history styling */
+        .history-list {
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding-right: 5px;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .history-item strong {
+            color: #a39bfe;
+        }
+
+        .history-item .win-x {
+            color: var(--x-color);
+        }
+
+        .history-item .win-o {
+            color: var(--o-color);
+        }
+
+        .history-item .draw {
+            color: #ffeb3b;
+        }
+
+        .history-item .details {
+            font-size: 13px;
+            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .no-history {
+            padding: 15px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Scrollbar styling */
+        .history-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .history-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .history-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .history-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Tic-Tac-Toe</h1>
+
+        <!-- Mode Selection Screen -->
+        <div id="mode-screen" class="screen mode-selection">
+            <h2>Choose Game Mode</h2>
+            <div class="btn-group">
+                <button id="pvp-btn">Player vs Player</button>
+                <button id="pvc-btn">Player vs Computer</button>
+            </div>
+            <button id="view-history-main" class="history-btn">View History</button>
+        </div>
+
+        <!-- Difficulty Selection Screen (for Player vs Computer) -->
+        <div id="difficulty-screen" class="screen difficulty-selection hidden">
+            <h2>Select Difficulty</h2>
+            <div class="btn-group">
+                <button id="easy-btn">Easy Mode</button>
+                <button id="hard-btn">Hard Mode</button>
+            </div>
+            <button id="back-to-mode" class="back-btn">Back</button>
+        </div>
+
+        <!-- Board Size Selection -->
+        <div id="board-size-screen" class="screen board-size-selection hidden">
+            <h2>Select Board Size</h2>
+            <div class="btn-group">
+                <button id="size-3" class="size-btn active">3×3</button>
+                <button id="size-4" class="size-btn">4×4</button>
+                <button id="size-5" class="size-btn">5×5</button>
+                <button id="size-7" class="size-btn">7×7</button>
+                <button id="size-9" class="size-btn">9×9</button>
+            </div>
+            <button id="back-from-size" class="back-btn">Back</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen hidden">
+            <div id="game-board" class="game-board"></div>
+            <div id="game-status" class="game-status">Player X's turn</div>
+            <div class="button-container">
+                <button id="quit-btn" class="back-btn">Quit Game</button>
+                <button id="restart-btn" class="restart-btn">Restart</button>
+            </div>
+            <div class="button-container" style="margin-top: 5px;">
+                <button id="view-history-game" class="history-btn">View History</button>
+            </div>
+        </div>
+
+        <!-- History Screen -->
+        <div id="history-screen" class="screen history-screen hidden">
+            <h2>Game History</h2>
+            <div id="history-list" class="history-list">
+                <!-- History items will be added here -->
+            </div>
+            <div class="button-container">
+                <button id="back-from-history" class="back-btn">Back</button>
+                <button id="clear-history" class="clear-history-btn">Clear History</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state variables
+        let gameMode = ''; // 'pvp' or 'pvc'
+        let difficulty = ''; // 'easy' or 'hard'
+        let boardSize = 3; // Default board size
+        let currentPlayer = 'x';
+        let gameBoard = [];
+        let gameActive = false;
+        let gameState = {}; // For tracking game state
+        let previousScreen = 'mode-screen'; // Track previous screen for history navigation
+        let gameHistory = []; // Store game history
+        let gameStartTime = null; // Track when the game started
+
+        // DOM Elements
+        const modeScreen = document.getElementById('mode-screen');
+        const difficultyScreen = document.getElementById('difficulty-screen');
+        const boardSizeScreen = document.getElementById('board-size-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const historyScreen = document.getElementById('history-screen');
+        const gameBoardElement = document.getElementById('game-board');
+        const gameStatusElement = document.getElementById('game-status');
+        const historyListElement = document.getElementById('history-list');
+
+        // Buttons
+        const pvpButton = document.getElementById('pvp-btn');
+        const pvcButton = document.getElementById('pvc-btn');
+        const easyButton = document.getElementById('easy-btn');
+        const hardButton = document.getElementById('hard-btn');
+        const sizeBtns = document.querySelectorAll('.size-btn');
+        const restartButton = document.getElementById('restart-btn');
+        const quitButton = document.getElementById('quit-btn');
+        const backToModeBtn = document.getElementById('back-to-mode');
+        const backFromSizeBtn = document.getElementById('back-from-size');
+        // History related buttons
+        const viewHistoryMainBtn = document.getElementById('view-history-main');
+        const viewHistoryGameBtn = document.getElementById('view-history-game');
+        const backFromHistoryBtn = document.getElementById('back-from-history');
+        const clearHistoryBtn = document.getElementById('clear-history');
+
+        // Initialize the game
+        function initGame() {
+            // Load game history from localStorage
+            loadHistory();
+
+            // Event listeners for game mode selection
+            pvpButton.addEventListener('click', () => {
+                gameMode = 'pvp';
+                modeScreen.classList.add('hidden');
+                boardSizeScreen.classList.remove('hidden');
+            });
+
+            pvcButton.addEventListener('click', () => {
+                gameMode = 'pvc';
+                modeScreen.classList.add('hidden');
+                difficultyScreen.classList.remove('hidden');
+            });
+
+            // Event listeners for difficulty selection
+            easyButton.addEventListener('click', () => {
+                difficulty = 'easy';
+                difficultyScreen.classList.add('hidden');
+                boardSizeScreen.classList.remove('hidden');
+            });
+
+            hardButton.addEventListener('click', () => {
+                difficulty = 'hard';
+                difficultyScreen.classList.add('hidden');
+                boardSizeScreen.classList.remove('hidden');
+            });
+
+            // Event listener for back buttons
+            backToModeBtn.addEventListener('click', () => {
+                difficultyScreen.classList.add('hidden');
+                modeScreen.classList.remove('hidden');
+            });
+
+            backFromSizeBtn.addEventListener('click', () => {
+                boardSizeScreen.classList.add('hidden');
+                if (gameMode === 'pvc') {
+                    difficultyScreen.classList.remove('hidden');
+                } else {
+                    modeScreen.classList.remove('hidden');
+                }
+            });
+
+            // Event listeners for board size selection
+            sizeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    sizeBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+                    // Set board size
+                    boardSize = parseInt(btn.id.split('-')[1]);
+                    // Start the game
+                    startGame();
+                });
+            });
+
+            // Event listener for restart button
+            restartButton.addEventListener('click', () => {
+                startGame();
+            });
+
+            // Event listener for quit button
+            quitButton.addEventListener('click', () => {
+                gameScreen.classList.add('hidden');
+                modeScreen.classList.remove('hidden');
+            });
+
+            // Event listeners for history buttons
+            viewHistoryMainBtn.addEventListener('click', () => {
+                previousScreen = 'mode-screen';
+                showHistoryScreen();
+            });
+
+            viewHistoryGameBtn.addEventListener('click', () => {
+                previousScreen = 'game-screen';
+                showHistoryScreen();
+            });
+
+            backFromHistoryBtn.addEventListener('click', () => {
+                historyScreen.classList.add('hidden');
+                document.getElementById(previousScreen).classList.remove('hidden');
+            });
+
+            clearHistoryBtn.addEventListener('click', () => {
+                clearHistory();
+                showHistoryScreen(); // Refresh the history screen
+            });
+        }
+
+        // Function to start/restart the game
+        function startGame() {
+            // Hide board size screen and show game screen
+            boardSizeScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+
+            // Reset game state
+            currentPlayer = 'x';
+            gameActive = true;
+            gameBoard = Array(boardSize * boardSize).fill('');
+            gameStartTime = new Date();
+
+            // Update game status
+            gameStatusElement.textContent = `Player X's turn`;
+
+            // Create the game board
+            createGameBoard();
+        }
+
+        // Function to create the game board
+        function createGameBoard() {
+            // Clear the game board
+            gameBoardElement.innerHTML = '';
+
+            // Set the grid columns based on board size
+            gameBoardElement.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
+
+            // Create the cells
+            for (let i = 0; i < boardSize * boardSize; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.setAttribute('data-index', i);
+
+                // Add click event listener
+                cell.addEventListener('click', handleCellClick);
+
+                gameBoardElement.appendChild(cell);
+            }
+
+            // Adjust cell font size based on board size
+            const cells = document.querySelectorAll('.cell');
+            let fontSize = '24px';
+
+            switch (boardSize) {
+                case 3: fontSize = '24px'; break;
+                case 4: fontSize = '20px'; break;
+                case 5: fontSize = '16px'; break;
+                case 7: fontSize = '14px'; break;
+                case 9: fontSize = '12px'; break;
+            }
+
+            cells.forEach(cell => {
+                cell.style.fontSize = fontSize;
+            });
+        }
+
+        // Function to handle cell click
+        function handleCellClick(e) {
+            const index = e.target.getAttribute('data-index');
+
+            // Check if the cell is already filled or the game is over
+            if (gameBoard[index] !== '' || !gameActive) {
+                return;
+            }
+
+            // Update the game board
+            gameBoard[index] = currentPlayer;
+            e.target.classList.add(currentPlayer);
+
+            // Check for win or draw
+            if (checkWin()) {
+                gameStatusElement.textContent = `Player ${currentPlayer.toUpperCase()} wins!`;
+                gameActive = false;
+                // Save game to history
+                saveGameToHistory(currentPlayer);
+                return;
+            }
+
+            if (checkDraw()) {
+                gameStatusElement.textContent = `Game ended in a draw!`;
+                gameActive = false;
+                // Save game to history
+                saveGameToHistory('draw');
+                return;
+            }
+
+            // Switch player
+            currentPlayer = currentPlayer === 'x' ? 'o' : 'x';
+            gameStatusElement.textContent = `Player ${currentPlayer.toUpperCase()}'s turn`;
+
+            // If playing against computer and it's computer's turn
+            if (gameMode === 'pvc' && currentPlayer === 'o' && gameActive) {
+                setTimeout(() => {
+                    computerMove();
+                }, 500);
+            }
+        }
+
+        // Function for computer move
+        function computerMove() {
+            let index;
+
+            if (difficulty === 'hard') {
+                index = getHardModeMove();
+            } else {
+                index = getEasyModeMove();
+            }
+
+            // Update the game board
+            gameBoard[index] = currentPlayer;
+            const cell = document.querySelector(`[data-index="${index}"]`);
+            cell.classList.add(currentPlayer);
+
+            // Check for win or draw
+            if (checkWin()) {
+                gameStatusElement.textContent = `Computer wins!`;
+                gameActive = false;
+                // Save game to history
+                saveGameToHistory('o');
+                return;
+            }
+
+            if (checkDraw()) {
+                gameStatusElement.textContent = `Game ended in a draw!`;
+                gameActive = false;
+                // Save game to history
+                saveGameToHistory('draw');
+                return;
+            }
+
+            // Switch back to player
+            currentPlayer = 'x';
+            gameStatusElement.textContent = `Player X's turn`;
+        }
+
+        // Function for easy mode computer move (random)
+        function getEasyModeMove() {
+            const emptyCells = gameBoard.map((cell, index) => cell === '' ? index : null).filter(index => index !== null);
+            const randomIndex = Math.floor(Math.random() * emptyCells.length);
+            return emptyCells[randomIndex];
+        }
+
+        // Function for hard mode computer move (smarter AI)
+        function getHardModeMove() {
+            // If board size is 3x3, use minimax algorithm
+            if (boardSize === 3) {
+                return getBestMove();
+            }
+            // For larger boards, use a simplified strategic approach
+            else {
+                return getStrategicMove();
+            }
+        }
+
+        // Minimax algorithm for 3x3 board
+        function getBestMove() {
+            let bestScore = -Infinity;
+            let bestMove;
+
+            // Try each available move
+            for (let i = 0; i < gameBoard.length; i++) {
+                if (gameBoard[i] === '') {
+                    gameBoard[i] = 'o'; // Computer is 'o'
+                    let score = minimax(gameBoard, 0, false);
+                    gameBoard[i] = ''; // Undo the move
+
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove = i;
+                    }
+                }
+            }
+
+            return bestMove;
+        }
+
+        // Minimax algorithm helper
+        function minimax(board, depth, isMaximizing) {
+            // Check terminal states
+            const winner = checkWinningPlayer();
+            if (winner === 'o') return 10 - depth; // Computer wins
+            if (winner === 'x') return depth - 10; // Human wins
+            if (checkDraw()) return 0; // Draw
+
+            if (isMaximizing) {
+                let bestScore = -Infinity;
+                for (let i = 0; i < board.length; i++) {
+                    if (board[i] === '') {
+                        board[i] = 'o';
+                        let score = minimax(board, depth + 1, false);
+                        board[i] = '';
+                        bestScore = Math.max(score, bestScore);
+                    }
+                }
+                return bestScore;
+            } else {
+                let bestScore = Infinity;
+                for (let i = 0; i < board.length; i++) {
+                    if (board[i] === '') {
+                        board[i] = 'x';
+                        let score = minimax(board, depth + 1, true);
+                        board[i] = '';
+                        bestScore = Math.min(score, bestScore);
+                    }
+                }
+                return bestScore;
+            }
+        }
+
+        // Strategic move for larger boards
+        function getStrategicMove() {
+            // First, check if computer can win in the next move
+            for (let i = 0; i < gameBoard.length; i++) {
+                if (gameBoard[i] === '') {
+                    gameBoard[i] = 'o';
+                    if (checkWin()) {
+                        gameBoard[i] = '';
+                        return i;
+                    }
+                    gameBoard[i] = '';
+                }
+            }
+
+            // Second, check if human can win in the next move and block
+            for (let i = 0; i < gameBoard.length; i++) {
+                if (gameBoard[i] === '') {
+                    gameBoard[i] = 'x';
+                    if (checkWin()) {
+                        gameBoard[i] = '';
+                        return i;
+                    }
+                    gameBoard[i] = '';
+                }
+            }
+
+            // Try to take center or corners if available (for strategic advantage)
+            const center = Math.floor(gameBoard.length / 2);
+            if (gameBoard[center] === '') {
+                return center;
+            }
+
+            // Try corners (for board sizes where corners make sense)
+            const corners = [
+                0,
+                boardSize - 1,
+                boardSize * (boardSize - 1),
+                boardSize * boardSize - 1
+            ];
+
+            const availableCorners = corners.filter(corner => gameBoard[corner] === '');
+            if (availableCorners.length > 0) {
+                return availableCorners[Math.floor(Math.random() * availableCorners.length)];
+            }
+
+            // If all else fails, make a random move
+            return getEasyModeMove();
+        }
+
+        // Function to check if a player has won
+        function checkWin() {
+            const winPatterns = getWinPatterns();
+
+            for (const pattern of winPatterns) {
+                const first = gameBoard[pattern[0]];
+                if (first === '') continue;
+
+                let allMatch = true;
+                for (let i = 1; i < pattern.length; i++) {
+                    if (gameBoard[pattern[i]] !== first) {
+                        allMatch = false;
+                        break;
+                    }
+                }
+
+                if (allMatch) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // Helper function to check which player has won
+        function checkWinningPlayer() {
+            const winPatterns = getWinPatterns();
+
+            for (const pattern of winPatterns) {
+                const first = gameBoard[pattern[0]];
+                if (first === '') continue;
+
+                let allMatch = true;
+                for (let i = 1; i < pattern.length; i++) {
+                    if (gameBoard[pattern[i]] !== first) {
+                        allMatch = false;
+                        break;
+                    }
+                }
+
+                if (allMatch) {
+                    return first;
+                }
+            }
+
+            return null;
+        }
+
+        // Function to get winning patterns based on board size
+        function getWinPatterns() {
+            const winPatterns = [];
+
+            // Rows
+            for (let i = 0; i < boardSize; i++) {
+                const row = [];
+                for (let j = 0; j < boardSize; j++) {
+                    row.push(i * boardSize + j);
+                }
+                winPatterns.push(row);
+            }
+
+            // Columns
+            for (let i = 0; i < boardSize; i++) {
+                const col = [];
+                for (let j = 0; j < boardSize; j++) {
+                    col.push(j * boardSize + i);
+                }
+                winPatterns.push(col);
+            }
+
+            // Diagonals
+            const diag1 = [];
+            const diag2 = [];
+            for (let i = 0; i < boardSize; i++) {
+                diag1.push(i * boardSize + i);
+                diag2.push(i * boardSize + (boardSize - 1 - i));
+            }
+            winPatterns.push(diag1);
+            winPatterns.push(diag2);
+
+            return winPatterns;
+        }
+
+        // Function to check if the game is a draw
+        function checkDraw() {
+            return !gameBoard.includes('');
+        }
+
+        // History related functions
+
+        // Function to save game to history
+        function saveGameToHistory(winner) {
+            const gameEndTime = new Date();
+            const gameDuration = Math.floor((gameEndTime - gameStartTime) / 1000); // Duration in seconds
+
+            const historyItem = {
+                date: gameEndTime.toLocaleString(),
+                mode: gameMode,
+                difficulty: gameMode === 'pvc' ? difficulty : null,
+                boardSize: boardSize,
+                winner: winner,
+                duration: gameDuration
+            };
+
+            // Add to history array
+            gameHistory.unshift(historyItem); // Add to beginning of array
+
+            // Limit history to 50 games
+            if (gameHistory.length > 50) {
+                gameHistory = gameHistory.slice(0, 50);
+            }
+
+            // Save to localStorage
+            saveHistory();
+        }
+
+        // Load history from localStorage
+        function loadHistory() {
+            const savedHistory = localStorage.getItem('tictactoe_history');
+            if (savedHistory) {
+                gameHistory = JSON.parse(savedHistory);
+            }
+        }
+
+        // Save history to localStorage
+        function saveHistory() {
+            localStorage.setItem('tictactoe_history', JSON.stringify(gameHistory));
+        }
+
+        // Clear history
+        function clearHistory() {
+            gameHistory = [];
+            localStorage.removeItem('tictactoe_history');
+        }
+
+        // Show history screen
+        function showHistoryScreen() {
+            // Hide all other screens
+            modeScreen.classList.add('hidden');
+            difficultyScreen.classList.add('hidden');
+            boardSizeScreen.classList.add('hidden');
+            gameScreen.classList.add('hidden');
+
+            // Show history screen
+            historyScreen.classList.remove('hidden');
+
+            // Update history list
+            updateHistoryList();
+        }
+
+        // Update history list
+        function updateHistoryList() {
+            historyListElement.innerHTML = '';
+
+            if (gameHistory.length === 0) {
+                historyListElement.innerHTML = '<div class="no-history">No game history available.</div>';
+                return;
+            }
+
+            gameHistory.forEach((game, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.classList.add('history-item');
+
+                // Create result text with appropriate color
+                let resultText = '';
+                if (game.winner === 'draw') {
+                    resultText = '<span class="draw">Draw</span>';
+                } else if (game.winner === 'x') {
+                    resultText = '<span class="win-x">Player X won</span>';
+                } else if (game.winner === 'o') {
+                    resultText = game.mode === 'pvp' ?
+                        '<span class="win-o">Player O won</span>' :
+                        '<span class="win-o">Computer won</span>';
+                }
+
+                // Format details
+                let modeText = game.mode === 'pvp' ? 'Player vs Player' : 'Player vs Computer';
+                let difficultyText = game.difficulty ? ` (${game.difficulty})` : '';
+                let boardSizeText = `${game.boardSize}×${game.boardSize}`;
+
+                // Format duration
+                let minutes = Math.floor(game.duration / 60);
+                let seconds = game.duration % 60;
+                let durationText = minutes > 0 ?
+                    `${minutes}m ${seconds}s` :
+                    `${seconds}s`;
+
+                historyItem.innerHTML = `
+                        <strong>Game ${gameHistory.length - index}</strong>: ${resultText}
+                        <div class="details">
+                            ${modeText}${difficultyText} | Board: ${boardSizeText} | Duration: ${durationText}
+                            <br>
+                            Date: ${game.date}
+                        </div>
+                    `;
+
+                historyListElement.appendChild(historyItem);
+            });
+        }
+
+        // Initialize the game when the page loads
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+
+</html>
