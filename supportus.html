@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Us - Gamedroid</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body,
+        html {
+            overflow: hidden;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .support-container {
+            height: 100%;
+            width: 100%;
+            overflow-y: auto;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #333;
+        }
+
+        .support-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+            text-align: center;
+        }
+
+        .support-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .support-btn {
+            padding: 12px 20px;
+            background-color: var(--settings-item-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--primary-color);
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .support-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .donate-btn {
+            border-left: 4px solid #4caf50;
+        }
+
+        .github-btn {
+            border-left: 4px solid #333;
+        }
+
+        .discord-btn {
+            border-left: 4px solid #c50707;
+        }
+
+        .collaborate-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .collaborate-card {
+            background-color: var(--settings-item-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 20px;
+            width: 100%;
+            max-width: 280px;
+            text-align: center;
+        }
+
+        .collaborate-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .collaborate-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .collaborate-text {
+            font-size: 14px;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .social-media {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--settings-item-bg);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary-color);
+            transition: transform 0.2s;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .telegram-icon {
+            color: #0088cc;
+        }
+
+        .instagram-icon {
+            color: #e1306c;
+        }
+
+        .twitter-icon {
+            color: #1da1f2;
+        }
+
+        .report-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .report-btn {
+            padding: 12px;
+            background-color: var(--settings-item-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--primary-color);
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .report-btn:hover {
+            transform: translateX(5px);
+        }
+
+        .bug-btn {
+            border-left: 4px solid #ff5252;
+        }
+
+        .feature-btn {
+            border-left: 4px solid #4caf50;
+        }
+
+        .reviews-container {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+            margin: 20px 0;
+            background-color: var(--settings-item-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+        }
+
+        .reviews-slider {
+            position: absolute;
+            width: 100%;
+            animation: slide 30s linear infinite;
+        }
+
+        .review-card {
+            padding: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .review-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .review-name {
+            font-size: 16px;
+            color: var(--primary-color);
+        }
+
+        .review-stars {
+            color: #ffc107;
+            margin-left: auto;
+        }
+
+        .review-text {
+            font-size: 14px;
+            color: var(--secondary-color);
+            line-height: 1.4;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(-480px);
+                /* Adjusted based on the total height of review cards */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="support-container">
+        <!-- Support This Project Section -->
+        <div class="support-section">
+            <div class="section-title">Support This Project</div>
+            <div class="section-subtitle">Help us continue development of Gamedroid</div>
+
+            <div class="support-buttons">
+                <div class="support-btn donate-btn">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    Donate via PayPal
+                </div>
+                <div class="support-btn github-btn">
+                    <i class="fab fa-github"></i>
+                    Star on GitHub
+                </div>
+                <div class="support-btn discord-btn">
+                    <i class="fab fa-instagram"></i>
+                    Stay in loop
+                </div>
+            </div>
+
+            <p class="journey-text">Your support helps us to create more awesome games and improve the platform!</p>
+        </div>
+
+        <!-- Collaboration Section -->
+        <div class="support-section">
+            <div class="section-title">Collaborate With Us</div>
+            <div class="section-subtitle">Join our team and make Gamedroid even better</div>
+
+            <div class="collaborate-cards">
+                <div class="collaborate-card">
+                    <div class="collaborate-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="collaborate-title">Developers</div>
+                    <div class="collaborate-text">Help us improve the codebase and add new features</div>
+                    <div class="support-btn github-btn">
+                        <i class="fab fa-github"></i>
+                        Fork Repository
+                    </div>
+                </div>
+
+                <!-- <div class="collaborate-card">
+                    <div class="collaborate-icon">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <div class="collaborate-title">Designers</div>
+                    <div class="collaborate-text">Create beautiful UI elements and game assets</div>
+                    <div class="support-btn">
+                        <i class="fas fa-envelope"></i>
+                        Contact Us
+                    </div>
+                </div> -->
+
+                <div class="collaborate-card">
+                    <div class="collaborate-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="collaborate-title">Game Creators</div>
+                    <div class="collaborate-text">Submit your games to be featured on Gamedroid</div>
+                    <div class="support-btn github-btn">
+                        <i class="fab fa-github"></i>
+                        Contribute in our project
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Us Improve Section -->
+        <div class="support-section">
+            <div class="section-title">No Money or Skills? You Still Can Help!</div>
+            <div class="section-subtitle">Your feedback is crucial for our improvement</div>
+
+            <div class="report-buttons">
+                <div class="report-btn bug-btn">
+                    <i class="fas fa-bug"></i>
+                    <div>
+                        <div>Report a Bug</div>
+                        <small>Help us fix issues you encounter</small>
+                    </div>
+                </div>
+
+                <div class="report-btn feature-btn">
+                    <i class="fas fa-lightbulb"></i>
+                    <div>
+                        <div>Request a Feature</div>
+                        <small>Tell us what would make Gamedroid better</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Media Section -->
+        <div class="support-section">
+            <div class="section-title">Follow Our Journey</div>
+            <div class="section-subtitle">Stay updated with latest features and development workflow</div>
+
+            <div class="social-media">
+                <a href="#" class="social-icon telegram-icon">
+                    <i class="fab fa-telegram-plane"></i>
+                </a>
+                <a href="#" class="social-icon instagram-icon">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-icon twitter-icon">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+
+            <p class="journey-text">Join our community to get early access to updates and exclusive features!</p>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="support-section">
+            <div class="section-title">What People Are Saying</div>
+
+            <div class="reviews-container">
+                <div class="reviews-slider">
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-avatar">JD</div>
+                            <div class="review-name">John Doe</div>
+                            <div class="review-stars">★★★★★</div>
+                        </div>
+                        <div class="review-text">
+                            Gamedroid is amazing! I love how smoothly the games run and the interface is so intuitive.
+                            Can't wait for more games!
+                        </div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-avatar">AS</div>
+                            <div class="review-name">Amy Smith</div>
+                            <div class="review-stars">★★★★★</div>
+                        </div>
+                        <div class="review-text">
+                            This is the best web-based gaming platform I've ever used. The UI feels just like my phone
+                            and games load super fast!
+                        </div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-avatar">MJ</div>
+                            <div class="review-name">Mike Johnson</div>
+                            <div class="review-stars">★★★★☆</div>
+                        </div>
+                        <div class="review-text">
+                            Cosmic Dash is addictive! I've been playing for hours. Would love to see more levels added
+                            in the future.
+                        </div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-avatar">LW</div>
+                            <div class="review-name">Lisa Wong</div>
+                            <div class="review-stars">★★★★★</div>
+                        </div>
+                        <div class="review-text">
+                            The customization options are fantastic! I can make Gamedroid look exactly how I want.
+                            Brilliant work by the developers.
+                        </div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-avatar">RB</div>
+                            <div class="review-name">Robert Brown</div>
+                            <div class="review-stars">★★★★☆</div>
+                        </div>
+                        <div class="review-text">
+                            X-Ray Orb has the best graphics I've seen in a browser game. Super responsive controls too!
+                        </div>
+                    </div>
+
+                    <!-- Repeat first reviews to create seamless loop -->
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-avatar">JD</div>
+                            <div class="review-name">John Doe</div>
+                            <div class="review-stars">★★★★★</div>
+                        </div>
+                        <div class="review-text">
+                            Gamedroid is amazing! I love how smoothly the games run and the interface is so intuitive.
+                            Can't wait for more games!
+                        </div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-avatar">AS</div>
+                            <div class="review-name">Amy Smith</div>
+                            <div class="review-stars">★★★★★</div>
+                        </div>
+                        <div class="review-text">
+                            This is the best web-based gaming platform I've ever used. The UI feels just like my phone
+                            and games load super fast!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="support-section" style="text-align: center;">
+            <p>Thank you for supporting Gamedroid!</p>
+            <p style="font-size: 12px; margin-top: 10px; color: var(--secondary-color);">
+                ©2025 Gamedroid Team. All rights reserved.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize review animation
+        const reviewsSlider = document.querySelector('.reviews-slider');
+
+        // Pause animation on hover
+        document.querySelector('.reviews-container').addEventListener('mouseenter', () => {
+            reviewsSlider.style.animationPlayState = 'paused';
+        });
+
+        document.querySelector('.reviews-container').addEventListener('mouseleave', () => {
+            reviewsSlider.style.animationPlayState = 'running';
+        });
+
+        // Handle button clicks
+        document.querySelector('.donate-btn').addEventListener('click', () => {
+            alert('Thank you for your interest in donating! This would redirect to our payment page.');
+        });
+
+        document.querySelector('.github-btn').addEventListener('click', () => {
+            alert('Thank you for your interest in our GitHub repository! This would redirect to our GitHub page.');
+        });
+
+        document.querySelector('.discord-btn').addEventListener('click', () => {
+            alert('Thank you for your interest in our Discord community! This would redirect to our Discord server.');
+        });
+
+        document.querySelector('.bug-btn').addEventListener('click', () => {
+            alert('Thank you for reporting a bug! This would open a bug report form.');
+        });
+
+        document.querySelector('.feature-btn').addEventListener('click', () => {
+            alert('Thank you for suggesting a feature! This would open a feature request form.');
+        });
+
+        // Social media links
+        const socialLinks = document.querySelectorAll('.social-icon');
+        socialLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const platform = e.currentTarget.classList.contains('telegram-icon') ? 'Telegram' :
+                    e.currentTarget.classList.contains('instagram-icon') ? 'Instagram' : 'Twitter';
+                alert(`Thank you for your interest in our ${platform} page! This would redirect to our ${platform} profile.`);
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary Meta Tags -->
+    <title>GameDroid - The Ultimate Mobile Gaming Experience | Play Classic & Modern Games</title>
+    <meta name="title" content="GameDroid - The Ultimate Mobile Gaming Experience | Play Classic & Modern Games">
+    <meta name="description"
+        content="Experience the best mobile gaming with GameDroid OS. Play classic games like Pacman, Tetris, and modern titles like Cosmic Dash and X-Ray Orb all in one beautiful interface.">
+    <meta name="keywords"
+        content="mobile games, arcade games, retro games, Pacman, Tetris, Cosmic Dash, X-Ray Orb, mobile OS, game platform">
+    <meta name="author" content="GameDroid">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://thegamedroidos.github.io">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://thegamedroidos.github.io">
+    <meta property="og:title" content="GameDroid - The Ultimate Mobile Gaming Experience">
+    <meta property="og:description"
+        content="Play classic and modern games like Pacman, Tetris, Cosmic Dash, and X-Ray Orb in one beautiful mobile interface.">
+    <meta property="og:image" content="https://thegamedroidos.github.io/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://thegamedroidos.github.io">
+    <meta property="twitter:title" content="GameDroid - The Ultimate Mobile Gaming Experience">
+    <meta property="twitter:description"
+        content="Play classic and modern games like Pacman, Tetris, Cosmic Dash, and X-Ray Orb in one beautiful mobile interface.">
+    <meta property="twitter:image" content="https://thegamedroidos.github.io/twitter-image.jpg">
+
+    <!-- Favicon and App Icons -->
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "GameDroid",
+      "applicationCategory": "Game",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "1024"
+      },
+      "description": "Experience the best mobile gaming with GameDroid OS. Play classic games like Pacman, Tetris, and modern titles like Cosmic Dash and X-Ray Orb all in one beautiful interface."
+    }
+    </script>
+</head>
+
+<body>
+    <div class="phone-container" aria-label="GameDroid OS Interface">
+        <!-- Status Bar -->
+        <div class="status-bar" role="banner">
+            <div class="status-bar-left">
+                <div class="time" aria-label="Current time">12:00</div>
+            </div>
+            <div class="status-bar-right">
+                <div class="status-icon" aria-hidden="true"><i class="fas fa-wifi"></i></div>
+                <div class="status-icon" aria-hidden="true"><i class="fas fa-signal"></i></div>
+                <div class="status-icon" aria-hidden="true"><i class="fas fa-battery-full"></i></div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" role="main">
+            <!-- Homescreen -->
+            <div class="homescreen">
+                <!-- App Grid -->
+                <div class="app-grid" aria-label="App Grid">
+                    <!-- Apps will be dynamically added here -->
+                </div>
+
+                <!-- Dock -->
+                <nav class="dock" aria-label="App Dock">
+                    <div class="dock-icon" data-app="cosmicDash" aria-label="Open Cosmic Dash">
+                        <i class="fas fa-rocket" aria-hidden="true"></i>
+                    </div>
+                    <div class="dock-icon" data-app="pacman" aria-label="Open Pacman">
+                        <i class="fas fa-ghost" aria-hidden="true"></i>
+                    </div>
+                    <div class="dock-icon" id="app-drawer-toggle" aria-label="Open App Drawer">
+                        <i class="fas fa-th" aria-hidden="true"></i>
+                    </div>
+                    <div class="dock-icon" data-app="xrayOrb" aria-label="Open X-Ray Orb">
+                        <i class="fas fa-atom" aria-hidden="true"></i>
+                    </div>
+                    <div class="dock-icon" data-app="settings" aria-label="Open Settings">
+                        <i class="fas fa-cog" aria-hidden="true"></i>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- App Drawer -->
+            <div class="app-drawer" aria-label="App Drawer">
+                <div class="drawer-handle" id="drawer-handle" aria-label="Close drawer"></div>
+                <div class="drawer-search">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input type="text" class="drawer-search-input" placeholder="Search apps..."
+                        aria-label="Search applications">
+                </div>
+                <div class="drawer-apps" aria-label="All Applications">
+                    <!-- Apps will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Open Animation Container -->
+    <div class="app-open-animation" aria-hidden="true">
+        <div class="app-header">
+            <div class="app-back-btn" aria-label="Go back"><i class="fas fa-arrow-left"></i></div>
+            <div class="app-title">App Title</div>
+        </div>
+        <div class="app-content">
+            <!-- App content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <!-- Fullscreen Toggle Button -->
+    <div class="fullscreen-toggle" aria-label="Toggle fullscreen">
+        <i class="fas fa-expand" aria-hidden="true"></i>
+    </div>
+
+    <!-- Home Button -->
+    <div class="home-button" aria-label="Go to home screen">
+        <i class="fas fa-home" aria-hidden="true"></i>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <p>Copyright © <span id="current-year"></span> GameDroid OS. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Preload Key Images -->
+    <link rel="preload" as="image" href="wallpaper1.jpeg">
+
+    <!-- Scripts -->
+    <script src="script.js" defer></script>
+    <script>
+        // Update the copyright year
+        function updateCopyrightYear() {
+            const currentYear = new Date().getFullYear();
+            document.getElementById('current-year').textContent = currentYear;
+        }
+
+        // Call this function when the page loads
+        updateCopyrightYear();
+    </script>
+</body>
+
+</html>

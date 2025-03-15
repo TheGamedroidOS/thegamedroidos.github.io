@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --accent-color: #fd79a8;
+            --text-color: #ffffff;
+            --background-color: #0f0f1a;
+            --glass-bg: rgba(20, 20, 35, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(100, 43, 115, 0.4) 0%, rgba(4, 0, 4, 0) 90%),
+                radial-gradient(circle at 90% 80%, rgba(43, 69, 115, 0.4) 0%, rgba(4, 0, 4, 0) 90%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            transform: translateY(-5px);
+        }
+
+        .calendar-container {
+            flex: 1;
+            min-width: 320px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .month-year {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .calendar-nav button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-color);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .calendar-nav button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .day {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            transition: background 0.3s ease;
+        }
+
+        .day:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .day.current {
+            background: rgba(var(--primary-color-rgb), 0.2);
+            font-weight: bold;
+        }
+
+        .day.special {
+            background: rgba(var(--accent-color-rgb), 0.3);
+        }
+
+        .day.special::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 50%;
+        }
+
+        .day.empty {
+            background: transparent;
+            cursor: default;
+        }
+
+        .settings-container {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .settings-title {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .settings-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
+
+        .color-picker-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .color-picker {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .color-picker label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .color-picker input {
+            width: 100%;
+            height: 30px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-color);
+            border-radius: 8px;
+        }
+
+        button.save-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        button.save-btn:hover {
+            background: rgba(var(--primary-color-rgb), 0.8);
+        }
+
+        .theme-presets {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .theme-preset {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid var(--glass-border);
+            transition: transform 0.2s ease;
+        }
+
+        .theme-preset:hover {
+            transform: scale(1.1);
+        }
+
+        .special-dates {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 15px;
+            padding-right: 5px;
+        }
+
+        .special-date-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .special-date-item button {
+            background: rgba(255, 0, 0, 0.3);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="calendar-container glass-panel">
+            <div class="calendar-header">
+                <div class="month-year" id="monthYear">March 2025</div>
+                <div class="calendar-nav">
+                    <button id="prevMonth">&lt;</button>
+                    <button id="nextMonth">&gt;</button>
+                </div>
+            </div>
+            <div class="weekdays">
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+            </div>
+            <div class="days" id="calendarDays">
+                <!-- Days will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="settings-container glass-panel">
+            <div class="settings-title">Calendar Settings</div>
+
+            <div class="settings-section">
+                <div class="section-title">Theme Presets</div>
+                <div class="theme-presets">
+                    <div class="theme-preset" style="background: linear-gradient(45deg, #6c5ce7, #fd79a8);"
+                        data-theme="default"></div>
+                    <div class="theme-preset" style="background: linear-gradient(45deg, #00b894, #00cec9);"
+                        data-theme="mint"></div>
+                    <div class="theme-preset" style="background: linear-gradient(45deg, #e17055, #fdcb6e);"
+                        data-theme="sunset"></div>
+                    <div class="theme-preset" style="background: linear-gradient(45deg, #1E3A8A, #3B82F6);"
+                        data-theme="ocean"></div>
+                    <div class="theme-preset" style="background: linear-gradient(45deg, #10B981, #059669);"
+                        data-theme="forest"></div>
+                </div>
+
+                <div class="section-title">Custom Colors</div>
+                <div class="color-picker-group">
+                    <div class="color-picker">
+                        <label for="primaryColor">Primary Color</label>
+                        <input type="color" id="primaryColor" value="#6c5ce7">
+                    </div>
+                    <div class="color-picker">
+                        <label for="accentColor">Accent Color</label>
+                        <input type="color" id="accentColor" value="#fd79a8">
+                    </div>
+                    <div class="color-picker">
+                        <label for="bgColor">Background</label>
+                        <input type="color" id="bgColor" value="#0f0f1a">
+                    </div>
+                    <div class="color-picker">
+                        <label for="textColor">Text Color</label>
+                        <input type="color" id="textColor" value="#ffffff">
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <div class="section-title">Add Special Date</div>
+                <div class="input-group">
+                    <label for="specialDate">Date</label>
+                    <input type="date" id="specialDate">
+                </div>
+                <div class="input-group">
+                    <label for="specialDateTitle">Title</label>
+                    <input type="text" id="specialDateTitle" placeholder="Birthday, Anniversary, etc.">
+                </div>
+                <button class="save-btn" id="addSpecialDate">Add Special Date</button>
+
+                <div class="special-dates" id="specialDatesList">
+                    <!-- Special dates will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <button class="save-btn" id="saveSettings">Save Settings</button>
+        </div>
+    </div>
+
+    <script>
+        // Helper function to convert hex to RGB
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        // Theme presets
+        const themes = {
+            default: {
+                primaryColor: '#6c5ce7',
+                accentColor: '#fd79a8',
+                backgroundColor: '#0f0f1a',
+                textColor: '#ffffff'
+            },
+            mint: {
+                primaryColor: '#00b894',
+                accentColor: '#00cec9',
+                backgroundColor: '#111827',
+                textColor: '#e2e8f0'
+            },
+            sunset: {
+                primaryColor: '#e17055',
+                accentColor: '#fdcb6e',
+                backgroundColor: '#1a202c',
+                textColor: '#f7fafc'
+            },
+            ocean: {
+                primaryColor: '#3B82F6',
+                accentColor: '#60A5FA',
+                backgroundColor: '#0F172A',
+                textColor: '#F1F5F9'
+            },
+            forest: {
+                primaryColor: '#10B981',
+                accentColor: '#34D399',
+                backgroundColor: '#064E3B',
+                textColor: '#ECFDF5'
+            }
+        };
+
+        // State
+        let currentDate = new Date();
+        let specialDates = [];
+
+        // DOM Elements
+        const monthYearElement = document.getElementById('monthYear');
+        const calendarDaysElement = document.getElementById('calendarDays');
+        const prevMonthButton = document.getElementById('prevMonth');
+        const nextMonthButton = document.getElementById('nextMonth');
+        const primaryColorInput = document.getElementById('primaryColor');
+        const accentColorInput = document.getElementById('accentColor');
+        const bgColorInput = document.getElementById('bgColor');
+        const textColorInput = document.getElementById('textColor');
+        const themePresets = document.querySelectorAll('.theme-preset');
+        const specialDateInput = document.getElementById('specialDate');
+        const specialDateTitleInput = document.getElementById('specialDateTitle');
+        const addSpecialDateButton = document.getElementById('addSpecialDate');
+        const specialDatesList = document.getElementById('specialDatesList');
+        const saveSettingsButton = document.getElementById('saveSettings');
+
+        // Initialize
+        function init() {
+            loadFromLocalStorage();
+            renderCalendar();
+            renderSpecialDates();
+            applyTheme();
+            setupEventListeners();
+        }
+
+        // Load data from localStorage
+        function loadFromLocalStorage() {
+            const savedTheme = localStorage.getItem('calendarTheme');
+            const savedSpecialDates = localStorage.getItem('calendarSpecialDates');
+
+            if (savedTheme) {
+                const theme = JSON.parse(savedTheme);
+                primaryColorInput.value = theme.primaryColor;
+                accentColorInput.value = theme.accentColor;
+                bgColorInput.value = theme.backgroundColor;
+                textColorInput.value = theme.textColor;
+            }
+
+            if (savedSpecialDates) {
+                specialDates = JSON.parse(savedSpecialDates);
+            }
+        }
+
+        // Save data to localStorage
+        function saveToLocalStorage() {
+            const theme = {
+                primaryColor: primaryColorInput.value,
+                accentColor: accentColorInput.value,
+                backgroundColor: bgColorInput.value,
+                textColor: textColorInput.value
+            };
+
+            localStorage.setItem('calendarTheme', JSON.stringify(theme));
+            localStorage.setItem('calendarSpecialDates', JSON.stringify(specialDates));
+        }
+
+        // Apply theme to CSS variables
+        function applyTheme() {
+            const primaryColor = primaryColorInput.value;
+            const accentColor = accentColorInput.value;
+            const backgroundColor = bgColorInput.value;
+            const textColor = textColorInput.value;
+
+            // Convert hex colors to RGB for rgba variables
+            const primaryRgb = hexToRgb(primaryColor);
+            const accentRgb = hexToRgb(accentColor);
+
+            document.documentElement.style.setProperty('--primary-color', primaryColor);
+            document.documentElement.style.setProperty('--accent-color', accentColor);
+            document.documentElement.style.setProperty('--background-color', backgroundColor);
+            document.documentElement.style.setProperty('--text-color', textColor);
+            document.documentElement.style.setProperty('--primary-color-rgb', `${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}`);
+            document.documentElement.style.setProperty('--accent-color-rgb', `${accentRgb.r}, ${accentRgb.g}, ${accentRgb.b}`);
+        }
+
+        // Render calendar
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            // Update header
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            monthYearElement.textContent = `${monthNames[month]} ${year}`;
+
+            // Clear previous calendar
+            calendarDaysElement.innerHTML = '';
+
+            // Get first day of month and total days in month
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Create empty cells for days before first day of month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.classList.add('day', 'empty');
+                calendarDaysElement.appendChild(emptyCell);
+            }
+
+            // Create cells for days in month
+            const today = new Date();
+            const isCurrentMonth = today.getMonth() === month && today.getFullYear() === year;
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.classList.add('day');
+                dayCell.textContent = day;
+
+                // Highlight current day
+                if (isCurrentMonth && day === today.getDate()) {
+                    dayCell.classList.add('current');
+                }
+
+                // Highlight special dates
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isSpecialDate = specialDates.some(date => date.date === dateStr);
+
+                if (isSpecialDate) {
+                    dayCell.classList.add('special');
+                    dayCell.setAttribute('title', getSpecialDateTitle(dateStr));
+                }
+
+                calendarDaysElement.appendChild(dayCell);
+            }
+        }
+
+        // Get special date title
+        function getSpecialDateTitle(dateStr) {
+            const specialDate = specialDates.find(date => date.date === dateStr);
+            return specialDate ? specialDate.title : '';
+        }
+
+        // Render special dates list
+        function renderSpecialDates() {
+            specialDatesList.innerHTML = '';
+
+            specialDates.forEach((date, index) => {
+                const dateObj = new Date(date.date);
+                const formattedDate = dateObj.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+
+                const specialDateItem = document.createElement('div');
+                specialDateItem.classList.add('special-date-item');
+                specialDateItem.innerHTML = `
+                    <div>
+                        <div>${date.title}</div>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">${formattedDate}</div>
+                    </div>
+                    <button data-index="${index}">&times;</button>
+                `;
+
+                specialDatesList.appendChild(specialDateItem);
+            });
+
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.special-date-item button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const index = parseInt(button.getAttribute('data-index'));
+                    specialDates.splice(index, 1);
+                    renderSpecialDates();
+                    renderCalendar();
+                    saveToLocalStorage();
+                });
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Month navigation
+            prevMonthButton.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar();
+            });
+
+            nextMonthButton.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar();
+            });
+
+            // Theme presets
+            themePresets.forEach(preset => {
+                preset.addEventListener('click', () => {
+                    const themeName = preset.getAttribute('data-theme');
+                    const theme = themes[themeName];
+
+                    primaryColorInput.value = theme.primaryColor;
+                    accentColorInput.value = theme.accentColor;
+                    bgColorInput.value = theme.backgroundColor;
+                    textColorInput.value = theme.textColor;
+
+                    applyTheme();
+                });
+            });
+
+            // Color inputs
+            [primaryColorInput, accentColorInput, bgColorInput, textColorInput].forEach(input => {
+                input.addEventListener('input', applyTheme);
+            });
+
+            // Add special date
+            addSpecialDateButton.addEventListener('click', () => {
+                const date = specialDateInput.value;
+                const title = specialDateTitleInput.value.trim();
+
+                if (date && title) {
+                    specialDates.push({ date, title });
+                    specialDateInput.value = '';
+                    specialDateTitleInput.value = '';
+                    renderSpecialDates();
+                    renderCalendar();
+                    saveToLocalStorage();
+                }
+            });
+
+            // Save settings
+            saveSettingsButton.addEventListener('click', () => {
+                saveToLocalStorage();
+                alert('Settings saved successfully!');
+            });
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>
